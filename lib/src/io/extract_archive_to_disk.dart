@@ -302,6 +302,17 @@ Future<void> extractFileToDisk(String inputPath, String outputPath,
         futures.add(output.close());
       }
     }
+
+    if (Platform.isMacOS) {
+      // Restore file permissions after decompressions
+      try {
+        final fileModeOctal = file.mode.toRadixString(8);
+        final fileMode = fileModeOctal.substring(fileModeOctal.length - 4);
+        Process.runSync('chmod', [fileMode, filePath]);
+      } catch (err) {
+        //
+      }
+    }
   }
 
   futures.add(toClose.close());

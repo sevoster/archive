@@ -86,6 +86,17 @@ void extractArchiveToDisk(Archive archive, String outputPath,
         output.close();
       }
     }
+
+    if (Platform.isMacOS) {
+      // Restore file permissions after decompressions
+      try {
+        final fileModeOctal = file.mode.toRadixString(8);
+        final fileMode = fileModeOctal.substring(fileModeOctal.length - 4);
+        Process.runSync('chmod', [fileMode, filePath]);
+      } catch (err) {
+        //
+      }
+    }
   }
 }
 
@@ -136,6 +147,17 @@ Future<void> extractArchiveToDiskAsync(Archive archive, String outputPath,
           //
         }
         output.close();
+      }
+    }
+
+    if (Platform.isMacOS) {
+      // Restore file permissions after decompressions
+      try {
+        final fileModeOctal = file.mode.toRadixString(8);
+        final fileMode = fileModeOctal.substring(fileModeOctal.length - 4);
+        await Process.run('chmod', ['$fileMode', filePath]);
+      } catch (err) {
+        //
       }
     }
   }
@@ -241,6 +263,17 @@ Future<void> extractFileToDisk(String inputPath, String outputPath,
           //
         }
         futures.add(output.close());
+      }
+    }
+
+    if (Platform.isMacOS) {
+      // Restore file permissions after decompressions
+      try {
+        final fileModeOctal = file.mode.toRadixString(8);
+        final fileMode = fileModeOctal.substring(fileModeOctal.length - 4);
+        Process.runSync('chmod', [fileMode, filePath]);
+      } catch (err) {
+        //
       }
     }
   }
